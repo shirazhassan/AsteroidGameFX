@@ -1,5 +1,6 @@
 module Common {
     requires java.desktop;
+    requires spring.context;
 
     exports shantAFX.common.data;
     exports shantAFX.common.asteroids;
