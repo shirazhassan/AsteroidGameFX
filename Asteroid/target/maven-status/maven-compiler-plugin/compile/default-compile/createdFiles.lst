@@ -1,0 +1,7 @@
+shantAFX\asteroids\AsteroidSize.class
+module-info.class
+shantAFX\asteroids\AsteroidPlugin.class
+shantAFX\asteroids\AsteroidFactory.class
+shantAFX\asteroids\AsteroidProcessor.class
+shantAFX\asteroids\Asteroid.class
+shantAFX\asteroids\AsteroidSplitter.class

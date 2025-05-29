@@ -9,6 +9,10 @@
   <modules>
     <module>Core</module>
     <module>Common</module>
+    <module>Collision</module>
+    <module>Player</module>
+    <module>Bullet</module>
+    <module>Asteroid</module>
   </modules>
   <properties>
     <java>java</java>
@@ -109,7 +113,7 @@
           <arguments>
             <argument>--module-path=mods-mvn</argument>
             <argument>--class-path=libs/*</argument>
-            <argument>--module=Core/shantAFX.main.Game</argument>
+            <argument>--module=Core/shantAFX.main.App</argument>
             <argument>--add-modules javafx.graphics</argument>
           </arguments>
         </configuration>

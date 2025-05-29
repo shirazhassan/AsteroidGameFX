@@ -1,0 +1,5 @@
+shantAFX\playersystem\PlayerControlSystem.class
+module-info.class
+shantAFX\playersystem\Player.class
+shantAFX\playersystem\PlayerFactory.class
+shantAFX\playersystem\PlayerPlugin.class
