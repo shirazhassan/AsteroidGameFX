@@ -19,8 +19,8 @@ public class Entity implements Serializable {
     private double rotation;
     private float radius;
     private String type = getClass().getSimpleName();
-    private final Map<Class<?>, Object> components = new HashMap<>();
     private Color color = Color.BLUE;
+    private int health;
 
     public String getID() {
         return ID.toString();
@@ -81,22 +81,6 @@ public class Entity implements Serializable {
     public Color getColor() {
         return color;
     }
-    public <T> void addComponent(T component) {
-        components.put(component.getClass(), component);
-    }
-    public <T> T getComponent(Class<T> componentClass) {
-        return (T) components.get(componentClass);
-    }
-    public <T> void removeComponent(Class<T> componentClass) {
-        components.remove(componentClass);
-    }
-    public <T> boolean hasComponent(Class<T> c) {
-        return components.containsKey(c);
-    }
-
-    public Color getBaseColor() {
-        return color;
-    }
 
     public double getDx() {
         return dx;
@@ -113,5 +97,13 @@ public class Entity implements Serializable {
     public void setDy(double dy) {
         this.dy = dy;
     }
+
+    public int getHealth() {return health;}
+
+    public void setHealth(int hp) {this.health = hp;}
+
+    public boolean isDead() {return this.health <= 0;}
+
+    public void damage(int amount) {this.health -= amount;}
 }
 

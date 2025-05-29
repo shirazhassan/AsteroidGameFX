@@ -4,14 +4,18 @@ import shantAFX.common.bullet.IBulletSPI;
 import shantAFX.common.data.*;
 import shantAFX.common.services.IEntityProcessingService;
 
+import java.util.List;
 import java.util.ServiceLoader;
 
 public class PlayerControlSystem implements IEntityProcessingService {
 
     private final IBulletSPI bulletSPI;
     private double shootCooldown = 0f;
-private static final double DEACCELERATION_FACTOR = 0.99;
+    private static final double DEACCELERATION_FACTOR = 0.99    ;
     private static final float FIRE_RATE = 0.1f;
+
+    private static final float RESPAWN_DELAY = 3.0f;
+    private float respawnTimer = 0.0f;
 
     public PlayerControlSystem() {
         this.bulletSPI = ServiceLoader.load(IBulletSPI.class).stream().map(ServiceLoader.Provider::get).findFirst().orElse(null);
@@ -46,8 +50,8 @@ private static final double DEACCELERATION_FACTOR = 0.99;
                     p.setDy(p.getDy() * scale);
                 }
             } else {
-                p.setDx(p.getDx() * Math.pow(DEACCELERATION_FACTOR, dt*60));
-                p.setDy(p.getDy() * Math.pow(DEACCELERATION_FACTOR, dt*60));
+                p.setDx(p.getDx() * Math.pow(DEACCELERATION_FACTOR, dt*20));
+                p.setDy(p.getDy() * Math.pow(DEACCELERATION_FACTOR, dt*20));
             }
 
             double nx = p.getX() + p.getDx() * dt;
@@ -65,6 +69,17 @@ private static final double DEACCELERATION_FACTOR = 0.99;
         }
 
         keys.update();
+
+        List<Entity> playerList = world.getEntities(Player.class);
+        if (playerList.isEmpty()) {
+            respawnTimer += gameData.getDeltaTime();
+            if (respawnTimer >= RESPAWN_DELAY) {
+                PlayerFactory.spawnPlayer(gameData, world);
+                respawnTimer = 0f;
+            }
+        } else {
+            respawnTimer = 0f;
+        }
     }
     private double wrap(double v, double max) {
         if (v < 0) return v + max;

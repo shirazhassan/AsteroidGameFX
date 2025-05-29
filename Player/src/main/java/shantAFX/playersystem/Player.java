@@ -1,24 +1,21 @@
 package shantAFX.playersystem;
 
 import shantAFX.common.data.*;
-import shantAFX.common.bullet.IBulletSPI;
-import shantAFX.common.services.IGamePluginService;
-import shantAFX.common.services.IEntityProcessingService;
-
 import java.awt.*;
-import java.util.ServiceLoader;
 
 public class Player extends Entity {
     public static final double ACCELERATION = 120;
     public static final double MAX_SPEED = 150;
-    public static final double ROTATION_SPEED = 200;
+    public static final double ROTATION_SPEED = 140;
     private double dx = 0, dy = 0;
 
     public Player() {
-        setPolygonCoordinates(new double[]{0f, -15f, 10f, 0f, 0f, 15f, -10f, 0f});
-        setRadius(12f);
+        setPolygonCoordinates(new double[]{
+                15, 0, -10, -10, -5, 0, -10, 10});
+        setRadius(8f);
         setRotation(0);
-        setColor(Color.BLUE);
+        setHealth(5);
+        setColor(Color.GREEN);
     }
 
     public double getDx() {return dx;}

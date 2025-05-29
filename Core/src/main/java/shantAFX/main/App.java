@@ -9,7 +9,6 @@ import javafx.scene.*;
 import javafx.scene.control.Label;
 import javafx.scene.effect.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
@@ -171,8 +170,10 @@ public class App extends Application {
         for (double coord : entity.getPolygonCoordinates()){
             polygon.getPoints().add(coord);
         }
-        polygon.setFill(Color.TRANSPARENT);
-        polygon.setStroke(Color.WHITE);
+        java.awt.Color awt = entity.getColor();
+        Color fxColor = Color.rgb(awt.getRed(), awt.getGreen(), awt.getAlpha());
+        polygon.setFill(Color.WHITE.interpolate(fxColor, 0.2));
+        polygon.setStroke(fxColor);
         polygon.setStrokeWidth(1);
 
         // Special effects for bullets

@@ -2,6 +2,8 @@ package shantAFX.asteroids;
 
 import shantAFX.common.asteroids.IAsteroidSplitter;
 import shantAFX.common.data.*;
+import shantAFX.common.services.IPostEntityProcessingService;
+
 import java.util.Random;
 
 public class AsteroidSplitter implements IAsteroidSplitter {
@@ -28,7 +30,6 @@ public class AsteroidSplitter implements IAsteroidSplitter {
             double ny = py + Math.sin(Math.toRadians(angle))*offset;
             Asteroid c = new Asteroid(childSize, nx, ny, angle);
 
-            // give some inherited velocity + burst
             double speed = childSize.getSpeed()*(0.5 + R.nextDouble());
             c.setDx(Math.cos(Math.toRadians(angle))*speed);
             c.setDy(Math.sin(Math.toRadians(angle))*speed);
