@@ -13,6 +13,8 @@
     <module>Player</module>
     <module>Bullet</module>
     <module>Asteroid</module>
+    <module>Enemy</module>
+
   </modules>
   <properties>
     <java>java</java>

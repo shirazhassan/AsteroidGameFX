@@ -3,6 +3,7 @@ import shantAFX.common.services.IGamePluginService;
 
 
 module Player {
+    exports shantAFX.playersystem;
     requires Common;
     requires javafx.graphics;
     requires java.desktop;
