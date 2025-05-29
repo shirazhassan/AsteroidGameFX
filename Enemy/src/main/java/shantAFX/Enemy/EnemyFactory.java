@@ -5,15 +5,13 @@ import shantAFX.common.data.World;
 import java.util.Random;
 
 public class EnemyFactory {
+    private static final Random RANDOM = new Random();
 
     public static Enemy spawnEnemy(GameData gameData, World world) {
         Enemy enemy = new Enemy();
-        Random random = new Random();
-        double x = random.nextDouble() * gameData.getDisplayWidth();
-        double y = random.nextDouble() * gameData.getDisplayHeight();
-        enemy.setX(x);
-        enemy.setY(y);
-        enemy.setRotation(random.nextDouble()* 360);
+        enemy.setX(RANDOM.nextDouble() * gameData.getDisplayWidth());
+        enemy.setY(RANDOM.nextDouble() * gameData.getDisplayHeight());
+        enemy.setRotation(RANDOM.nextDouble() * 360);
         world.addEntity(enemy);
         return enemy;
     }

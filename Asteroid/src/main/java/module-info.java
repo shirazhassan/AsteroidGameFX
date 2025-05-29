@@ -5,6 +5,7 @@ module Asteroid {
     requires Common;
     exports shantAFX.asteroids;
     requires javafx.graphics;
+    requires java.desktop;
 
     uses shantAFX.common.asteroids.IAsteroidSplitter;
 

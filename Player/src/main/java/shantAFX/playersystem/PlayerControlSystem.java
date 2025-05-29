@@ -11,7 +11,7 @@ public class PlayerControlSystem implements IEntityProcessingService {
 
     private final IBulletSPI bulletSPI;
     private double shootCooldown = 0f;
-    private static final double DEACCELERATION_FACTOR = 0.99;
+    private static final double DEACCELERATION_FACTOR = 0.99    ;
     private static final float FIRE_RATE = 0.1f;
 
     private static final float RESPAWN_DELAY = 3.0f;
@@ -50,8 +50,8 @@ public class PlayerControlSystem implements IEntityProcessingService {
                     p.setDy(p.getDy() * scale);
                 }
             } else {
-                p.setDx(p.getDx() * Math.pow(DEACCELERATION_FACTOR, dt*60));
-                p.setDy(p.getDy() * Math.pow(DEACCELERATION_FACTOR, dt*60));
+                p.setDx(p.getDx() * Math.pow(DEACCELERATION_FACTOR, dt*20));
+                p.setDy(p.getDy() * Math.pow(DEACCELERATION_FACTOR, dt*20));
             }
 
             double nx = p.getX() + p.getDx() * dt;

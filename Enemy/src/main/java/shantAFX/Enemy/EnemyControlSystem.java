@@ -13,17 +13,31 @@ public class EnemyControlSystem implements IEntityProcessingService{
     private final IBulletSPI bulletSPI;
     private final EnemyAI ai;
 
+    private float spawnTimer = 0f;
+    private static final float SPAWN_INTERVAL = 5f;
+
     public EnemyControlSystem() {
-        bulletSPI = ServiceLoader.load(IBulletSPI.class).findFirst().orElse(null);
-        ai = new EnemyAI();
+        this.bulletSPI = ServiceLoader.load(IBulletSPI.class).findFirst().orElse(null);
+        this.ai = new EnemyAI();
     }
 
     @Override
     public void process(GameData gameData, World world) {
         float dt = gameData.getDeltaTime();
+
+        spawnTimer += dt;
+        if (spawnTimer >= SPAWN_INTERVAL) {
+            spawnTimer -= SPAWN_INTERVAL;
+            EnemyFactory.spawnEnemy(gameData, world);
+        }
+
+        float w = gameData.getDisplayWidth();
+        float h = gameData.getDisplayHeight();
+
         List<Entity> enemies = world.getEntities(Enemy.class);
-        for (Entity enemy : enemies) {
-            ai.update((Enemy)enemy, gameData, world, bulletSPI);
+        for (Entity e : enemies) {
+            Enemy enemy = (Enemy)e;
+            ai.update(enemy, gameData, world, bulletSPI);
 
             enemy.setDx(enemy.getDx() * Math.pow(0.99, dt*60));
             enemy.setDy(enemy.getDy() * Math.pow(0.99, dt*60));
@@ -35,10 +49,10 @@ public class EnemyControlSystem implements IEntityProcessingService{
                 enemy.setDy(enemy.getDy() * scale);
             }
 
-            double newX = enemy.getX() + enemy.getDx() * dt;
-            double newY = enemy.getY() + enemy.getDy() * dt;
-            enemy.setX(wrap(newX, gameData.getDisplayWidth()));
-            enemy.setY(wrap(newY, gameData.getDisplayHeight()));
+            double newX = wrap(enemy.getX() + enemy.getDx() * dt, w);
+            double newY = wrap(enemy.getY() + enemy.getDy() * dt, h);
+            enemy.setX(newX);
+            enemy.setY(newY);
         }
     }
 
