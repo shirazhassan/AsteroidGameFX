@@ -10,7 +10,7 @@ public enum AsteroidSize {
 
     private final float baseRadius;
     private final int minSplit, maxSplit;
-    private static final float BASE_SPEED = 5000f;
+    private static final float BASE_SPEED = 600f;
 
     AsteroidSize (float baseRadius, int minSplit, int maxSplit) {
         this.baseRadius = baseRadius;

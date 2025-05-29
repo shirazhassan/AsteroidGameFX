@@ -15,8 +15,9 @@ public class Player extends Entity {
     private double dx = 0, dy = 0;
 
     public Player() {
-        setPolygonCoordinates(new double[]{0f, -15f, 10f, 0f, 0f, 15f, -10f, 0f});
-        setRadius(12f);
+        setPolygonCoordinates(new double[]{
+                15, 0, -10, -10, -5, 0, -10, 10});
+        setRadius(10f);
         setRotation(0);
         setColor(Color.BLUE);
     }

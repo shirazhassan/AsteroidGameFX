@@ -4,7 +4,7 @@ import shantAFX.common.data.GameData;
 import shantAFX.common.data.World;
 
 public class AsteroidFactory {
-    public static final int INITIAL_COUNT = 20;
+    public static final int INITIAL_COUNT = 10;
     public static final int MAX_ASTEROIDS = 120;
     public static final double SPAWN_BUFFER = 200.0;
 
