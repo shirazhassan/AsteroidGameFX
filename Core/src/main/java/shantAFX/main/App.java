@@ -1,10 +1,193 @@
 package shantAFX.main;
 
-/**
- * Hello world!
- */
-public class App {
+import shantAFX.common.data.*;
+import shantAFX.common.services.*;
+
+import javafx.animation.AnimationTimer;
+import javafx.application.Application;
+import javafx.scene.*;
+import javafx.scene.control.Label;
+import javafx.scene.effect.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
+import javafx.stage.Stage;
+import java.util.*;
+
+public class App extends Application {
+
+    private final GameData gameData = new GameData();
+    private final World world = new World();
+    private final Map<String, Node> entityViews = new HashMap<>();
+    private final Set<KeyCode> activeKeys = new HashSet<>();
+
+    private Pane gamePane;
+    private Scene scene;
+    private Label collisionModeLabel;
+
+    private final List<IGamePluginService> plugins = new ArrayList<>();
+    private final List<IEntityProcessingService> processors = new ArrayList<>();
+    private final List<IPostEntityProcessingService> postProcessors = new ArrayList<>();
+
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        setupGameWindow(primaryStage);
+        setupKeyHandling();
+        setupLabels();
+        loadServices();
+
+        new AnimationTimer() {
+            private long lastUpdate = -1;
+
+            @Override
+            public void handle(long now) {
+                if (lastUpdate < 0) {
+                    lastUpdate = now;
+                    return;
+                }
+                float deltaTime = (now - lastUpdate) / 1_000_000_000f;
+                lastUpdate = now;
+
+                gameData.setDeltaTime(deltaTime);
+                updateKeys();
+                processEntities();
+                renderEntities();
+            }
+        }.start();
+    }
+
+    private void setupGameWindow(Stage stage) {
+        gamePane = new Pane();
+        gamePane.setStyle("-fx-background-color: black;");
+        scene = new Scene(gamePane, 800, 600);
+
+        stage.setScene(scene);
+        stage.setTitle("Asteroids");
+        stage.show();
+
+        // Handle window resize
+        scene.widthProperty().addListener((obs, oldVal, newVal) -> {
+            gameData.setDisplayWidth(newVal.intValue());
+            gamePane.setPrefWidth(newVal.doubleValue());
+        });
+
+        scene.heightProperty().addListener((obs, oldVal, newVal) -> {
+            gameData.setDisplayHeight(newVal.intValue());
+            gamePane.setPrefHeight(newVal.doubleValue());
+        });
+    }
+
+    private void setupKeyHandling() {
+        scene.setOnKeyPressed(event -> {
+            KeyCode code = event.getCode();
+            activeKeys.add(code);
+
+            // Handle special keys
+            if (code == KeyCode.F11) {
+                Stage stage = (Stage) scene.getWindow();
+                stage.setFullScreen(!stage.isFullScreen());
+            } else if (code == KeyCode.TAB) {
+                toggleCollisionMode();
+            }
+        });
+
+        scene.setOnKeyReleased(event -> activeKeys.remove(event.getCode()));
+    }
+
+    private void toggleCollisionMode() {
+        CollisionMode[] modes = CollisionMode.values();
+        CollisionMode current = gameData.getCollisionMode();
+        CollisionMode next = modes[(current.ordinal() + 1) % modes.length];
+        gameData.setCollisionMode(next);
+        collisionModeLabel.setText("Collision: " + next);
+    }
+
+    private void setupLabels() {
+        collisionModeLabel = new Label("Collision: " + gameData.getCollisionMode());
+        collisionModeLabel.setStyle("-fx-font-size: 14; -fx-text-fill: white; -fx-background-color: rgba(0,0,0,0.5);");
+        collisionModeLabel.setTranslateX(10);
+        collisionModeLabel.setTranslateY(10);
+        gamePane.getChildren().add(collisionModeLabel);
+    }
+
+    private void loadServices() {
+        // Load plugins
+        ServiceLoader.load(IGamePluginService.class).forEach(plugin -> {
+            plugins.add(plugin);
+            plugin.start(gameData, world);
+        });
+
+        // Load processors
+        ServiceLoader.load(IEntityProcessingService.class).forEach(processors::add);
+        ServiceLoader.load(IPostEntityProcessingService.class).forEach(postProcessors::add);
+    }
+
+    private void updateKeys() {
+        GameKeys keys = gameData.getKeys();
+        keys.setKey(GameKeys.LEFT, activeKeys.contains(KeyCode.LEFT) || activeKeys.contains(KeyCode.A));
+        keys.setKey(GameKeys.RIGHT, activeKeys.contains(KeyCode.RIGHT) || activeKeys.contains(KeyCode.D));
+        keys.setKey(GameKeys.UP, activeKeys.contains(KeyCode.UP) || activeKeys.contains(KeyCode.W));
+        keys.setKey(GameKeys.SPACE, activeKeys.contains(KeyCode.SPACE));
+        keys.update();
+    }
+
+    private void processEntities() {
+        processors.forEach(processor -> processor.process(gameData, world));
+        postProcessors.forEach(postProcessor -> postProcessor.process(gameData, world));
+    }
+
+    private void renderEntities() {
+        // Remove views for deleted entities
+        entityViews.keySet().removeIf(id -> {
+            if (world.getEntity(id) == null) {
+                gamePane.getChildren().remove(entityViews.get(id));
+                return true;
+            }
+            return false;
+        });
+
+        // Update existing entities and create new ones
+        for (Entity entity : world.getEntities()) {
+            Node view = entityViews.get(entity.getID());
+
+            if (view == null) {
+                view = createEntityView(entity);
+                entityViews.put(entity.getID(), view);
+                gamePane.getChildren().add(view);
+            }
+
+            updateView(view, entity);
+        }
+    }
+
+    private Node createEntityView(Entity entity) {
+        Polygon polygon = new Polygon();
+        for (double coord : entity.getPolygonCoordinates()){
+            polygon.getPoints().add(coord);
+        }
+        polygon.setFill(Color.TRANSPARENT);
+        polygon.setStroke(Color.WHITE);
+        polygon.setStrokeWidth(1);
+
+        // Special effects for bullets
+        if ("Bullet".equals(entity.getType())) {
+            Glow glow = new Glow(0.7);
+            glow.setInput(new Bloom(0.5));
+            polygon.setEffect(glow);
+        }
+
+        return polygon;
+    }
+
+    private void updateView(Node view, Entity entity) {
+        view.setTranslateX(entity.getX());
+        view.setTranslateY(entity.getY());
+        view.setRotate(entity.getRotation());
     }
 }
