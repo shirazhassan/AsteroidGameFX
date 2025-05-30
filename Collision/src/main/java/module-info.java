@@ -1,5 +1,3 @@
-import shantAFX.common.services.IPostEntityProcessingService;
-
 module Collision {
     exports shantAFX.collision;
 
@@ -12,6 +10,6 @@ module Collision {
 
     uses shantAFX.common.asteroids.IAsteroidSplitter;
 
-    provides IPostEntityProcessingService with shantAFX.collision.CollisionDetector;
-
+    provides shantAFX.common.services.IPostEntityProcessingService
+            with shantAFX.collision.CollisionDetector;
 }

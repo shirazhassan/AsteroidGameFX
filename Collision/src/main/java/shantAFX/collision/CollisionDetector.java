@@ -17,7 +17,12 @@ public class CollisionDetector implements IPostEntityProcessingService {
     private final IAsteroidSplitter splitter;
 
     public CollisionDetector() {
-        this.splitter = ServiceLoader.load(IAsteroidSplitter.class).findFirst().orElseThrow();
+        this.splitter = ServiceLoader.load(IAsteroidSplitter.class).findFirst().orElse(new IAsteroidSplitter() {
+            @Override
+            public void createSplitAsteroid(Entity e, World w) {
+
+            }
+        });
     }
 
     @Override
@@ -79,9 +84,11 @@ public class CollisionDetector implements IPostEntityProcessingService {
     }
 
     public boolean collides(Entity e1, Entity e2) {
-        float dx = (float) e1.getX() - (float) e2.getX();
-        float dy = (float) e1.getY() - (float) e2.getY();
-        float distance = (float) Math.sqrt(dx * dx + dy * dy);
-        return distance < (e1.getRadius() + e2.getRadius());
+        double dx =  e1.getX() -  e2.getX();
+        double dy =  e1.getY() - e2.getY();
+        double distance = Math.sqrt(dx * dx + dy * dy);
+        float sumRadii = e1.getRadius() + e2.getRadius();
+
+        return distance <= sumRadii;
     }
 }
