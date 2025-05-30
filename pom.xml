@@ -120,7 +120,7 @@
           <arguments>
             <argument>--module-path=mods-mvn</argument>
             <argument>--class-path=libs/*</argument>
-            <argument>--module=Core/shantAFX.main.App</argument>
+            <argument>--module=Core/shantAFX.main.Main</argument>
             <argument>--add-modules javafx.graphics</argument>
           </arguments>
         </configuration>

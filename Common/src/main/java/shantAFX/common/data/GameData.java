@@ -2,7 +2,7 @@ package shantAFX.common.data;
 
 public class GameData {
     private int displayWidth  = 800 ;
-    private int displayHeight = 800;
+    private int displayHeight = 700;
     private final GameKeys keys = new GameKeys();
     private float deltaTime;
     private CollisionMode wallMode = CollisionMode.WRAP;

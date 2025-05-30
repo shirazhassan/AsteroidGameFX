@@ -14,7 +14,7 @@ public class Player extends Entity {
                 15, 0, -10, -10, -5, 0, -10, 10});
         setRadius(8f);
         setRotation(0);
-        setHealth(5);
+        setHealth(10);
         setColor(Color.GREEN);
     }
 

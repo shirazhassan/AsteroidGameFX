@@ -15,7 +15,7 @@ import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
 import java.util.*;
 
-public class App extends Application {
+public class App {
 
     private final GameData gameData = new GameData();
     private final World world = new World();
@@ -26,16 +26,24 @@ public class App extends Application {
     private Scene scene;
     private Label collisionModeLabel;
 
-    private final List<IGamePluginService> plugins = new ArrayList<>();
-    private final List<IEntityProcessingService> processors = new ArrayList<>();
-    private final List<IPostEntityProcessingService> postProcessors = new ArrayList<>();
+    private final List<IGamePluginService> plugins;
+    private final List<IEntityProcessingService> processors;
+    private final List<IPostEntityProcessingService> postProcessors;
 
+
+    public App(List<IGamePluginService> plugins, List<IEntityProcessingService> processors, List<IPostEntityProcessingService> postProcessors) {
+        this.plugins = plugins;
+        this.processors = processors ;
+        this.postProcessors = postProcessors;
+    }
+    /*
     public static void main(String[] args) {
         launch(args);
     }
 
-    @Override
-    public void start(Stage primaryStage) {
+ */
+
+    public void start(Stage primaryStage){
         setupGameWindow(primaryStage);
         setupKeyHandling();
         setupLabels();
@@ -64,7 +72,7 @@ public class App extends Application {
     private void setupGameWindow(Stage stage) {
         gamePane = new Pane();
         gamePane.setStyle("-fx-background-color: black;");
-        scene = new Scene(gamePane, 800, 600);
+        scene = new Scene(gamePane, gameData.getDisplayWidth(), gameData.getDisplayHeight());
 
         stage.setScene(scene);
         stage.setTitle("Asteroids");
@@ -160,7 +168,6 @@ public class App extends Application {
                 entityViews.put(entity.getID(), view);
                 gamePane.getChildren().add(view);
             }
-
             updateView(view, entity);
         }
     }
