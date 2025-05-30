@@ -179,9 +179,9 @@ public class App {
         }
         java.awt.Color awt = entity.getColor();
         Color fxColor = Color.rgb(awt.getRed(), awt.getGreen(), awt.getAlpha());
-        polygon.setFill(Color.WHITE.interpolate(fxColor, 0.2));
+        polygon.setFill(Color.DARKGRAY.interpolate(fxColor, 0.2));
         polygon.setStroke(fxColor);
-        polygon.setStrokeWidth(1);
+        polygon.setStrokeWidth(1.2);
 
         // Special effects for bullets
         if ("Bullet".equals(entity.getType())) {
