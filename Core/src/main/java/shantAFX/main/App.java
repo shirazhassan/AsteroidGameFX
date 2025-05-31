@@ -35,12 +35,6 @@ public class App {
         this.processors = processors ;
         this.postProcessors = postProcessors;
     }
-    /*
-    public static void main(String[] args) {
-        launch(args);
-    }
-
- */
 
     public void start(Stage primaryStage){
         setupGameWindow(primaryStage);
@@ -77,7 +71,7 @@ public class App {
         stage.setTitle("Asteroids");
         stage.show();
 
-        // Handle window resize
+        // This Handling window size
         scene.widthProperty().addListener((obs, oldVal, newVal) -> {
             gameData.setDisplayWidth(newVal.intValue());
             gamePane.setPrefWidth(newVal.doubleValue());
@@ -94,7 +88,7 @@ public class App {
             KeyCode code = event.getCode();
             activeKeys.add(code);
 
-            // Handle special keys
+            // This Handles special keys
             if (code == KeyCode.F11) {
                 Stage stage = (Stage) scene.getWindow();
                 stage.setFullScreen(!stage.isFullScreen());
@@ -123,13 +117,13 @@ public class App {
     }
 
     private void loadServices() {
-        // Load plugins
+        // Here all plugins Loads
         ServiceLoader.load(IGamePluginService.class).forEach(plugin -> {
             plugins.add(plugin);
             plugin.start(gameData, world);
         });
 
-        // Load processors
+        // Here all processors loads
         ServiceLoader.load(IEntityProcessingService.class).forEach(processors::add);
         ServiceLoader.load(IPostEntityProcessingService.class).forEach(postProcessors::add);
     }
@@ -149,7 +143,7 @@ public class App {
     }
 
     private void renderEntities() {
-        // Remove views for deleted entities
+        // This removes views after deleting entities form world
         entityViews.keySet().removeIf(id -> {
             if (world.getEntity(id) == null) {
                 gamePane.getChildren().remove(entityViews.get(id));
@@ -158,7 +152,7 @@ public class App {
             return false;
         });
 
-        // Update existing entities and create new ones
+        // Here existing entities updates and then create new ones
         for (Entity entity : world.getEntities()) {
             Node view = entityViews.get(entity.getID());
 
@@ -182,7 +176,6 @@ public class App {
         polygon.setStroke(fxColor);
         polygon.setStrokeWidth(1.2);
 
-        // Special effects for bullets
         if ("Bullet".equals(entity.getType())) {
             Glow glow = new Glow(0.7);
             glow.setInput(new Bloom(0.5));

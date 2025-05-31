@@ -91,6 +91,6 @@ public class CollisionDetector implements IPostEntityProcessingService {
         double distance = Math.sqrt(dx * dx + dy * dy);
         float sumRadii = e1.getRadius() + e2.getRadius();
 
-        return distance <= sumRadii;
+        return distance < sumRadii;
     }
 }
