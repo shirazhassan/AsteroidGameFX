@@ -2,10 +2,12 @@ package shantAFX.playersystem;
 
 import shantAFX.common.bullet.IBulletSPI;
 import shantAFX.common.data.*;
+import shantAFX.common.data.components.PlayerComponent;
 import shantAFX.common.services.IEntityProcessingService;
 
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.stream.Collectors;
 
 public class PlayerControlSystem implements IEntityProcessingService {
 
@@ -13,6 +15,8 @@ public class PlayerControlSystem implements IEntityProcessingService {
     private double shootCooldown = 0f;
     private static final double DEACCELERATION_FACTOR = 0.99    ;
     private static final float FIRE_RATE = 0.1f;
+    public static final float PLAYER_RADIUS = 8;
+
 
     private static final float RESPAWN_DELAY = 3.0f;
     private float respawnTimer = 0.0f;
@@ -26,55 +30,58 @@ public class PlayerControlSystem implements IEntityProcessingService {
         double dt = gameData.getDeltaTime();
         GameKeys keys = gameData.getKeys();
         for (Entity playerE : world.getEntities()) {
-            if (!(playerE instanceof Player)) {
+            PlayerComponent pc = playerE.getComponent(PlayerComponent.class);
+            if (pc == null)
                 continue;
-            }
-
-            Player p = (Player) playerE;
 
             if (keys.isDown(GameKeys.LEFT)) {
-                p.setRotation(p.getRotation() - Player.ROTATION_SPEED * dt);
+                playerE.setRotation(playerE.getRotation() - Player.ROTATION_SPEED * dt);
             }
             if (keys.isDown(GameKeys.RIGHT)) {
-                p.setRotation(p.getRotation() + Player.ROTATION_SPEED * dt);
+                playerE.setRotation(playerE.getRotation() + Player.ROTATION_SPEED * dt);
             }
             if (keys.isDown(GameKeys.UP)) {
-                double rad = Math.toRadians(p.getRotation());
-                p.setDx(p.getDx() + Math.cos(rad) * Player.ACCELERATION * dt);
-                p.setDy(p.getDy() + Math.sin(rad) * Player.ACCELERATION * dt);
+                double rad = Math.toRadians(playerE.getRotation());
+                playerE.setDx(playerE.getDx() + Math.cos(rad) * Player.ACCELERATION * dt);
+                playerE.setDy(playerE.getDy() + Math.sin(rad) * Player.ACCELERATION * dt);
 
-                double speed = Math.hypot(p.getDx(), p.getDy());
+                double speed = Math.hypot(playerE.getDx(), playerE.getDy());
                 if (speed > Player.MAX_SPEED) {
                     double scale = Player.MAX_SPEED / speed;
-                    p.setDx(p.getDx() * scale);
-                    p.setDy(p.getDy() * scale);
+                    playerE.setDx(playerE.getDx() * scale);
+                    playerE.setDy(playerE.getDy() * scale);
                 }
             } else {
-                p.setDx(p.getDx() * Math.pow(DEACCELERATION_FACTOR, dt*20));
-                p.setDy(p.getDy() * Math.pow(DEACCELERATION_FACTOR, dt*20));
+                playerE.setDx(playerE.getDx() * Math.pow(DEACCELERATION_FACTOR, dt*20));
+                playerE.setDy(playerE.getDy() * Math.pow(DEACCELERATION_FACTOR, dt*20));
             }
 
-            double nx = p.getX() + p.getDx() * dt;
-            double ny = p.getY() + p.getDy() * dt;
+            double nx = playerE.getX() + playerE.getDx() * dt;
+            double ny = playerE.getY() + playerE.getDy() * dt;
             nx = wrap(nx, gameData.getDisplayWidth());
             ny = wrap(ny, gameData.getDisplayHeight());
-            p.setX(nx);
-            p.setY(ny);
+            playerE.setX(nx);
+            playerE.setY(ny);
 
             shootCooldown -= dt;
             if (bulletSPI != null && keys.isDown(GameKeys.SPACE) && shootCooldown <= 0f) {
-                world.addEntity(bulletSPI.createBullet(p, gameData));
+                world.addEntity(bulletSPI.createBullet(playerE, gameData));
                 shootCooldown = FIRE_RATE;
             }
         }
 
         keys.update();
 
-        List<Entity> playerList = world.getEntities(Player.class);
+        List<Entity> playerList = world.getEntities()
+                .stream()
+                .filter(e -> e.getComponent(PlayerComponent.class) != null)
+                .toList();
         if (playerList.isEmpty()) {
             respawnTimer += gameData.getDeltaTime();
             if (respawnTimer >= RESPAWN_DELAY) {
-                PlayerFactory.spawnPlayer(gameData, world);
+                Entity newPlayer = PlayerFactory.spawnPlayer(gameData, world);
+                newPlayer.addComponent(new PlayerComponent());
+                world.addEntity(newPlayer);
                 respawnTimer = 0f;
             }
         } else {

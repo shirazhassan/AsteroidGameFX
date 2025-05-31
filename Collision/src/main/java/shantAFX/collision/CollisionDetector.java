@@ -1,14 +1,10 @@
 package shantAFX.collision;
 
-import shantAFX.asteroids.Asteroid;
 import shantAFX.common.asteroids.IAsteroidSplitter;
 import shantAFX.common.services.IPostEntityProcessingService;
 import shantAFX.common.data.GameData;
 import shantAFX.common.data.World;
 import shantAFX.common.data.Entity;
-import shantAFX.playersystem.Player;
-import shantAFX.Enemy.Enemy;
-import shantAFX.bulletsystem.Bullet;
 
 import java.util.*;
 
@@ -44,10 +40,15 @@ public class CollisionDetector implements IPostEntityProcessingService {
                     }
 
 
-                    if (!collides(e1, e2)) continue;
+                    if (!collides(e1, e2)) {
+                        continue;
+                    }
 
-                    if(e1 instanceof Bullet && (e2 instanceof Player || e2 instanceof Enemy)) {
-                        ((Entity) e2).damage(1);
+                    String type1 = e1.getType().toLowerCase(Locale.ROOT);
+                    String type2 = e2.getType().toLowerCase(Locale.ROOT);
+
+                    if(type1.equals("bullet") && (type2.equals("player") || type2.equals("enemy"))) {
+                        e2.damage(1);
                         world.removeEntity(e1);
                         removedIds.add(e1.getID());
                         if (e2.isDead()){
@@ -55,8 +56,9 @@ public class CollisionDetector implements IPostEntityProcessingService {
                             removedIds.add(e2.getID());
                         }
                         break;
-                    } else if (e2 instanceof Bullet && (e1 instanceof  Player || e1 instanceof Enemy)) {
-                        ((Entity) e1).damage(1);
+                    }
+                    if (type2.equals("bullet") && (type1.equals("player") || type1.equals("enemy"))) {
+                        e1.damage(1);
                         world.removeEntity(e2);
                         removedIds.add(e2.getID());
                         if (e1.isDead()){
@@ -67,11 +69,11 @@ public class CollisionDetector implements IPostEntityProcessingService {
                     }
 
 
-                    if(e1 instanceof Asteroid) {
-                        splitter.createSplitAsteroid((Asteroid)e1, world);
+                    if(type1.equals("asteroid")) {
+                        splitter.createSplitAsteroid(e1, world);
                     }
-                        if(e2 instanceof Asteroid) {
-                            splitter.createSplitAsteroid((Asteroid)e2, world);
+                        if(type2.equals("asteroid")) {
+                            splitter.createSplitAsteroid(e2, world);
                         }
                     world.removeEntity(e1);
                     world.removeEntity(e2);

@@ -19,30 +19,6 @@
       <version>${project.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>shantAFX</groupId>
-      <artifactId>Asteroid</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>shantAFX</groupId>
-      <artifactId>Bullet</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
-    </dependency>
-      <dependency>
-          <groupId>shantAFX</groupId>
-          <artifactId>Player</artifactId>
-          <version>1.0.1-SNAPSHOT</version>
-          <scope>compile</scope>
-      </dependency>
-    <dependency>
-      <groupId>shantAFX</groupId>
-      <artifactId>Enemy</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
-
     <!-- Testing dependencies -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>

@@ -5,10 +5,13 @@ shantAFX\common\data\GameKeys.class
 shantAFX\common\services\IPostEntityProcessingService.class
 shantAFX\common\util\ServiceLocator.class
 shantAFX\common\bullet\IBulletSPI.class
+shantAFX\common\data\components\PlayerComponent.class
 shantAFX\common\asteroids\IAsteroidSplitter.class
 shantAFX\common\data\CollisionMode.class
 module-info.class
 shantAFX\common\bullet\Bullet.class
 shantAFX\common\data\GameData.class
+shantAFX\common\data\components\FactionComponent$Faction.class
 shantAFX\common\services\IEntityProcessingService.class
+shantAFX\common\data\components\FactionComponent.class
 shantAFX\common\services\IGamePluginService.class

@@ -1,5 +1,7 @@
 package shantAFX.common.data;
 
+import shantAFX.common.data.components.PlayerComponent;
+
 import java.awt.*;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -21,6 +23,7 @@ public class Entity implements Serializable {
     private String type = getClass().getSimpleName();
     private Color color = Color.BLUE;
     private int health;
+    private final Map<Class<?>, Object> components = new HashMap<>();
 
     public String getID() {
         return ID.toString();
@@ -105,5 +108,12 @@ public class Entity implements Serializable {
     public boolean isDead() {return this.health <= 0;}
 
     public void damage(int amount) {this.health -= amount;}
+
+    public <T> void addComponent(T component) {
+        components.put(component.getClass(), component);
+    }
+    public <T> T getComponent(Class<T> playerComponentClass) {
+        return (T) components.get(playerComponentClass);
+    }
 }
 

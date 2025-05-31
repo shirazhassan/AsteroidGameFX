@@ -4,7 +4,6 @@ import shantAFX.common.data.*;
 import shantAFX.common.services.*;
 
 import javafx.animation.AnimationTimer;
-import javafx.application.Application;
 import javafx.scene.*;
 import javafx.scene.control.Label;
 import javafx.scene.effect.*;

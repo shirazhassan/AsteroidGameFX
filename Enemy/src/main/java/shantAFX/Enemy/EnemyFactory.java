@@ -2,6 +2,8 @@ package shantAFX.Enemy;
 
 import shantAFX.common.data.GameData;
 import shantAFX.common.data.World;
+import shantAFX.common.data.components.FactionComponent;
+
 import java.util.Random;
 
 public class EnemyFactory {
@@ -12,6 +14,10 @@ public class EnemyFactory {
         enemy.setX(RANDOM.nextDouble() * gameData.getDisplayWidth());
         enemy.setY(RANDOM.nextDouble() * gameData.getDisplayHeight());
         enemy.setRotation(RANDOM.nextDouble() * 360);
+
+        enemy.addComponent(
+                new FactionComponent(FactionComponent.Faction.ENEMY)
+        );
         world.addEntity(enemy);
         return enemy;
     }

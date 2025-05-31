@@ -1,8 +1,8 @@
 module Enemy {
     requires Common;
-    requires Player;
     requires java.desktop;
     requires javafx.graphics;
+    requires spring.context;
 
     uses shantAFX.common.bullet.IBulletSPI;
 

@@ -7,6 +7,7 @@ module Common {
     exports shantAFX.common.services;
     exports shantAFX.common.bullet;
     exports shantAFX.common.util;
+    exports shantAFX.common.data.components;
 
     uses shantAFX.common.services.IEntityProcessingService;
     uses shantAFX.common.services.IGamePluginService;
