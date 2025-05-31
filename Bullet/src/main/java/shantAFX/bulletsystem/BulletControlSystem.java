@@ -1,7 +1,7 @@
 package shantAFX.bulletsystem;
 
 import shantAFX.common.data.*;
-import shantAFX.common.services.IEntityProcessingService;
+import shantAFX.common.services. IEntityProcessingService;
 
 public class BulletControlSystem implements IEntityProcessingService {
     @Override
